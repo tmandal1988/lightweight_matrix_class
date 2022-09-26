@@ -16,7 +16,7 @@ int main(){
 	MatrixInv<float> m1 = m;
 	m1.PrintMatrix();
 
-	MatrixInv<float> m2 = m1.InverseUsingQr();
+	MatrixInv<float> m2 = m1.Inverse();
 
 	MatrixInv<float> m3 = m1*m2;
 	m3.PrintMatrix();

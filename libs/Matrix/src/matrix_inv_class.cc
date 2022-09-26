@@ -94,7 +94,7 @@ MatrixInv<T> MatrixInv<T>::InverseUsingQr(){
 			}
 		}
 	}
-	r.PrintMatrix();
+
 	return r.BackSubstitution()*q;
 }
 
@@ -108,10 +108,14 @@ MatrixInv<T> MatrixInv<T>::BackSubstitution(){
 		throw invalid_argument("Matrix is not square\n");
 
 	for(int idx_r = nrows_; idx_r-- > 0;){
+
 		rb(idx_r, idx_r) = 1/(this->matrix_[idx_r][idx_r]);
+
 		for(int idx_c = idx_r; idx_c-- > 0;){
+
 			for(size_t idx_k = idx_c; idx_k <= idx_r - 1; idx_k++){
-				rb(idx_c, idx_r) = rb(idx_c, idx_r) -  this->matrix_[idx_r][idx_k + 1]*rb(idx_k+1, idx_r);
+
+				rb(idx_c, idx_r) = rb(idx_c, idx_r) -  this->matrix_[idx_c][idx_k + 1]*rb(idx_k+1, idx_r);
 			}
 			rb(idx_c, idx_r) = rb(idx_c, idx_r)/this->matrix_[idx_c][idx_c];
 		}
