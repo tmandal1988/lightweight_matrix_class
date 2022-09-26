@@ -58,6 +58,68 @@ MatrixInv<T> MatrixInv<T>::Inverse(){
 	return inverse_matrix;
 }
 
+template <typename T>
+MatrixInv<T> MatrixInv<T>::InverseUsingQr(){
+	size_t nrows_ = this->nrows_;
+	size_t ncols_ = this->ncols_;
+	MatrixInv<T> q(nrows_, ncols_, "eye");
+	MatrixInv<T> r(this->matrix_, nrows_, ncols_);
+	T v1, v2;
+	if (nrows_ != ncols_)
+		throw invalid_argument("Matrix is not square\n");
+
+	for(size_t idx_c = 0; idx_c < ncols_; idx_c++){
+		for(size_t idx_r = idx_c + 1; idx_r < nrows_; idx_r++){
+			if( abs(r(idx_c, idx_c)) < 1e-20 ){
+				for(size_t idx_cc = idx_c; idx_cc < ncols_; idx_cc++){
+					v1 = r(idx_r, idx_cc);
+					r(idx_r, idx_cc) = r(idx_c, idx_cc);
+					r(idx_c, idx_cc) = v1;
+				}
+
+					for(size_t idx_qc = 0; idx_qc < nrows_; idx_qc++){
+						v2 = q(idx_r, idx_qc);
+						q(idx_r, idx_qc) = q(idx_c, idx_qc);
+						q(idx_c, idx_qc) = v2;
+					}
+			}
+
+			T temp = r(idx_r, idx_c)/r(idx_c, idx_c);
+			for(size_t idx_qcc = 0; idx_qcc < ncols_; idx_qcc++){
+				q(idx_r, idx_qcc) -= temp*q(idx_c, idx_qcc);
+			}
+			
+			for (size_t idx_rcc = idx_c; idx_rcc < ncols_; idx_rcc++){		
+				r(idx_r, idx_rcc) -= temp*r(idx_c, idx_rcc);
+			}
+		}
+	}
+	r.PrintMatrix();
+	return r.BackSubstitution()*q;
+}
+
+template<typename T>
+MatrixInv<T> MatrixInv<T>::BackSubstitution(){
+	size_t nrows_ = this->nrows_;
+	size_t ncols_ = this->ncols_;
+	MatrixInv<T> rb(nrows_, ncols_);
+
+	if (nrows_ != ncols_)
+		throw invalid_argument("Matrix is not square\n");
+
+	for(int idx_r = nrows_; idx_r-- > 0;){
+		rb(idx_r, idx_r) = 1/(this->matrix_[idx_r][idx_r]);
+		for(int idx_c = idx_r; idx_c-- > 0;){
+			for(size_t idx_k = idx_c; idx_k <= idx_r - 1; idx_k++){
+				rb(idx_c, idx_r) = rb(idx_c, idx_r) -  this->matrix_[idx_r][idx_k + 1]*rb(idx_k+1, idx_r);
+			}
+			rb(idx_c, idx_r) = rb(idx_c, idx_r)/this->matrix_[idx_c][idx_c];
+		}
+	}
+
+	return rb;
+}
+
 // Explicit template instantiation
 template class MatrixInv<float>;
 template class MatrixInv<double>;

@@ -15,6 +15,7 @@ class MatrixBase{
 		MatrixBase();
 		MatrixBase(size_t num_rows, size_t num_cols);
 		MatrixBase(size_t num_rows, size_t num_cols, string type);
+		MatrixBase(T **matrix, size_t num_rows, size_t num_cols);
 		~MatrixBase();
 
 		// copy constructor

@@ -9,6 +9,9 @@ class MatrixInv : public MatrixBase<T>{
 	using MatrixBase<T>::MatrixBase;
 
 	public:
+		MatrixInv(const MatrixBase<T>& matrix):MatrixBase<T>(matrix){}
 		MatrixInv Inverse();
+		MatrixInv InverseUsingQr();
+		MatrixInv<T> BackSubstitution();
 
 };

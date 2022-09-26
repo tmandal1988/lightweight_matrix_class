@@ -53,6 +53,25 @@ MatrixBase<T>::MatrixBase(size_t num_rows, size_t num_cols, string type){
 }
 
 template <typename T>
+MatrixBase<T>::MatrixBase(T **matrix, size_t num_rows, size_t num_cols){
+	nrows_ = num_rows;
+	ncols_ = num_cols;
+	matrix_ = new T*[nrows_];
+
+	// assign memory for the columns
+	for(size_t idx_r = 0; idx_r < nrows_; idx_r++){
+		matrix_[idx_r] = new T[ncols_];
+	}
+
+	// initialize MatrixBase with zeros and then assign 1 to diagonal
+	for(size_t idx_r = 0; idx_r < nrows_; idx_r++){
+		for(size_t idx_c = 0; idx_c < ncols_; idx_c++){
+				matrix_[idx_r][idx_c] = matrix[idx_r][idx_c];
+		}
+	}
+}
+
+template <typename T>
 MatrixBase<T>::MatrixBase(const MatrixBase<T>& matrix_to_copy){
 	nrows_ = matrix_to_copy.nrows_;
 	ncols_ = matrix_to_copy.ncols_;
